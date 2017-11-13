@@ -2,11 +2,13 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System;
 
 namespace TechJobsConsole
 {
     class JobData
     {
+      
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
         static bool IsDataLoaded = false;
 
@@ -45,16 +47,24 @@ namespace TechJobsConsole
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
+            
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToLower();
+                
+                
+                
 
-                if (aValue.Contains(value))
+                if (aValue.Contains(value.ToLower()))
                 {
                     jobs.Add(row);
+                   
                 }
-            }
+             
 
+            }
+            
+           
             return jobs;
         }
 
@@ -101,6 +111,27 @@ namespace TechJobsConsole
 
             IsDataLoaded = true;
         }
+
+        //Added in FindByValue per request
+        public static List<Dictionary<string, string>> FindByValue(string user_input)
+        {
+            LoadData();
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            foreach (Dictionary<string, string> search_job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> search_item in search_job)
+                {
+                    if (search_item.Value.ToLower().Contains(user_input.ToLower()))
+                    {
+                        jobs.Add(search_job);
+                        break;
+                    }
+
+                }
+            }
+            return jobs;
+        }
+
 
         /*
          * Parse a single line of a CSV file into a string array
